@@ -11,12 +11,13 @@
 class Pixel
 {
   public:
-    Pixel(Adafruit_NeoPixel strip, int index, uint8_t red, uint8_t green, uint8_t blue);
-    Pixel(Adafruit_NeoPixel strip, int index, uint32_t color);
+  	Pixel();
+    Pixel(Adafruit_NeoPixel *strip, int index, uint8_t red, uint8_t green, uint8_t blue);
+    Pixel(Adafruit_NeoPixel *strip, int index, uint32_t color);
     void setToNow(uint32_t color);
     void setToGradually(uint32_t color);
   private:
-    Adafruit_NeoPixel _strip;
+    Adafruit_NeoPixel *_stripPtr;
     int _index;
     uint32_t _currentColor;
     uint8_t _currRed;

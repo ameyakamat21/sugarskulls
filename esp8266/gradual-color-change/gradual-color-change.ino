@@ -20,6 +20,7 @@ ESP8266WebServer server(80);
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(5, PIN, NEO_GRB + NEO_KHZ800);
+Pixel myPixels[5];
 
 const int led = LED_BUILTIN;
 
@@ -76,7 +77,8 @@ void neogreen() {
 
 void setStripColor(uint32_t color) {
   for(int i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, color);
+//      strip.setPixelColor(i, color);
+      myPixels[i].setToNow(color);
     }
    
 }
@@ -139,6 +141,13 @@ void setup(void){
   // Init neopixel strip
   strip.begin();
   strip.show();
+
+  Serial.println(" - Initializing Pixel array");
+  for(uint8_t i=0; i<5; i++) {
+    myPixels[i] = Pixel(&strip, i, 100, 200, 150);
+  }
+  
+  Serial.println(" - Finished initializing Pixel array");
 
   if (MDNS.begin("esp8266")) {
     Serial.println("MDNS responder started");

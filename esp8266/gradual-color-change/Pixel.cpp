@@ -7,27 +7,32 @@
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 
-Pixel::Pixel(Adafruit_NeoPixel strip, int index, uint32_t color)
-{
-  _strip = strip;
-  _index = index;
-  _currentColor = color;
+Pixel::Pixel() {
 
-  // TODO set color now
 }
 
-Pixel::Pixel(Adafruit_NeoPixel strip, int index, uint8_t red, uint8_t green, uint8_t blue) {
-  _strip = strip;
+Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint32_t color)
+{
+  _stripPtr = stripPtr;
+  _index = index;
+  _currentColor = color;
+}
+
+Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green, uint8_t blue) {
+  Serial.print(" -- In Pixel::Pixel constructor #");
+  Serial.println(index);
+  _stripPtr = stripPtr;
   _index = index;
   _currRed = red;
   _currGreen = green;
   _currBlue = blue;
+  
 }
 
 void Pixel::setToNow(uint32_t color)
 {
   // Set color now
-  _strip.setPixelColor(_index, color);
+  (*_stripPtr).setPixelColor(_index, color);
 }
 
 void Pixel::setToGradually(uint32_t color)
