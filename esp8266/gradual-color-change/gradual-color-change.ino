@@ -6,7 +6,7 @@
 #include "Pixel.h"
 
 const char* ssid = "AJ-Xfin";
-const char* password = "<ins-here>";
+const char* password = "<insert>";
 
 ESP8266WebServer server(80);
 #define PIN 5
@@ -58,29 +58,35 @@ void ledOff() {
 }
 
 void neored() {
-  setStripColor(strip.Color(10, 100, 10));
+  setStripNow(strip.Color(10, 100, 10));
   server.send(200, "text/plain", "ok");
   strip.show();
 }
 
 void neoblue() {
-  setStripColor(strip.Color(10, 10, 100));
   server.send(200, "text/plain", "ok");
+  setStripGradually(10, 10, 100);
   strip.show();
 }
 
 void neogreen() {
-  setStripColor(strip.Color(100, 10, 10));
   server.send(200, "text/plain", "ok");
+  setStripGradually(100, 10, 10);
   strip.show();
 }
 
-void setStripColor(uint32_t color) {
+void setStripNow(uint32_t color) {
   for(int i=0; i<strip.numPixels(); i++) {
 //      strip.setPixelColor(i, color);
       myPixels[i].setToNow(color);
     }
-   
+}
+
+void setStripGradually(uint8_t red, uint8_t green, uint8_t blue) {
+  for(int i=0; i<strip.numPixels(); i++) {
+//      strip.setPixelColor(i, color);
+      myPixels[i].setToGradually(red, green, blue);
+    }
 }
 
 void setPixelStringColor(int pixelNo, String strColor) {
@@ -102,7 +108,6 @@ void setPixelStringColor(int pixelNo, String strColor) {
 }
 
 void setStripTo() {
-  Serial.println("Args: " + server.args());
   String c0 = server.arg("p0");
   setPixelStringColor(0,c0);
   String c1 = server.arg("p1");

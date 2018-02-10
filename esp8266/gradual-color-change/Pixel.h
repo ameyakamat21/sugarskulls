@@ -15,14 +15,17 @@ class Pixel
     Pixel(Adafruit_NeoPixel *strip, int index, uint8_t red, uint8_t green, uint8_t blue);
     Pixel(Adafruit_NeoPixel *strip, int index, uint32_t color);
     void setToNow(uint32_t color);
-    void setToGradually(uint32_t color);
+    void setToGradually(uint8_t red, uint8_t green, uint8_t blue);
+    void setDestinationColor(uint8_t red, uint8_t green, uint8_t blue);
   private:
     Adafruit_NeoPixel *_stripPtr;
     int _index;
     uint32_t _currentColor;
-    uint8_t _currRed;
-    uint8_t _currGreen;
-    uint8_t _currBlue;
+    float _currRed, _destRed, _deltaRed;
+    float _currGreen, _destGreen, _deltaGreen;
+    float _currBlue, _destBlue, _deltaBlue;
+    int _changePeriodMs;  // Period under which the color changes 
+    int _updatePeriodMs;  // How often an update happens
 };
 
 #endif
