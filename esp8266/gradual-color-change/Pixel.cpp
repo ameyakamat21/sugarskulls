@@ -21,7 +21,8 @@ Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green,
   _currGreen = (float) green, _destGreen = (float) green, _deltaGreen = 0.2;
   _currBlue = (float) blue, _destBlue = (float) blue, _deltaBlue = 0.2;
   _changePeriodMs = 1000; //ms
-  _updatePeriodMs = 50; //ms
+  _updatePeriodMs = 25; //ms
+  _updateFactor = 0.25;
 }
 
 void Pixel::setToNow(uint32_t color)
@@ -81,15 +82,15 @@ bool Pixel::updateColor() {
 
 void Pixel::moveTowardDestinationColor() {
   if(!floatEqual(_currBlue, _destBlue)) {
-      _currBlue += (_destBlue - _currBlue) * 0.4;
+      _currBlue += (_destBlue - _currBlue) * _updateFactor;
    }
    if(!floatEqual(_currRed, _destRed)) {
       // _currRed += _deltaRed;
-      _currRed += (_destRed - _currRed) * 0.4;
+      _currRed += (_destRed - _currRed) *  _updateFactor;
    }
    if(!floatEqual(_currGreen, _destGreen)) {
       // _currGreen += _deltaGreen;
-      _currGreen += (_destGreen - _currGreen) * 0.4;
+      _currGreen += (_destGreen - _currGreen) * _updateFactor;
    }
 }
 
