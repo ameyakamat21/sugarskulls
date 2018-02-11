@@ -6,7 +6,7 @@
 #include "Pixel.h"
 
 const char* ssid = "AJ-Xfin";
-const char* password = "<insert-here>";
+const char* password = "<ins-here>";
 
 ESP8266WebServer server(80);
 #define PIN 5
@@ -24,6 +24,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ80
 Pixel myPixels[NUM_PIXELS];
 unsigned long lastUpdatedMillis = 0;
 const int led = LED_BUILTIN;
+String printStr = "";
 
 void handleRoot() {
   digitalWrite(led, 1);
@@ -61,24 +62,20 @@ void ledOff() {
 void neored() {
   setStripDestinationColor(100, 10, 10);
   server.send(200, "text/plain", "ok");
-  strip.show();
 }
 
 void neoblue() {
   server.send(200, "text/plain", "ok");
   setStripDestinationColor(10, 10, 100);
-  strip.show();
 }
 
 void neogreen() {
   server.send(200, "text/plain", "ok");
   setStripDestinationColor(10, 100, 10);
-  strip.show();
 }
 
 void setStripDestinationColor(uint8_t red, uint8_t green, uint8_t blue) {
   for(int i=0; i<strip.numPixels(); i++) {
-//      strip.setPixelColor(i, color);
       myPixels[i].setDestinationColor(red, green, blue);
     }
 }
@@ -166,8 +163,14 @@ void setup(void){
 void loop(void){
   server.handleClient();
   // Update all pixels
+  bool updated = false;
+  printStr = "";
   for(int i=0; i<NUM_PIXELS; i++) {
-    myPixels[i].updateColor();
+    updated = updated || myPixels[i].updateColor();
+    printStr += myPixels[i].getHexStr();
+  }
+  if(updated)  {
+    Serial.println(printStr);
   }
 }
 

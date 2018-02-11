@@ -11,13 +11,6 @@ Pixel::Pixel() {
 
 }
 
-Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint32_t color)
-{
-  _stripPtr = stripPtr;
-  _index = index;
-  _currentColor = color;
-}
-
 Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green, uint8_t blue) {
   Serial.print(" -- In Pixel::Pixel constructor #");
   Serial.println(index);
@@ -40,8 +33,6 @@ void Pixel::setToNow(uint32_t color)
 void Pixel::setToGradually(uint8_t red, uint8_t green, uint8_t blue)
 {
   // Set to eventually
-
-
   for(int i = 0; i < 50; i++) {
     green = (green + 10) % 256;
     red = (red + 10) % 256;
@@ -71,21 +62,21 @@ void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
  * Call this function every _updatePeriodMs milliseconds
  *
  */
-void Pixel::updateColor() {
+bool Pixel::updateColor() {
    unsigned long currentMillis = millis();
    if(currentMillis - _lastRecordedMillis < _updatePeriodMs) {
-    return;
+    return false;
    }
    _lastRecordedMillis = currentMillis;
 
    moveTowardDestinationColor();
 
-   printColorTriplet("curr", (uint8_t) _currRed, (uint8_t) _currGreen, (uint8_t) _currBlue);
-
+   // printColorTriplet("curr", (uint8_t) _currRed, (uint8_t) _currGreen, (uint8_t) _currBlue);
    uint32_t newColor = (*_stripPtr).Color((uint8_t) _currGreen, 
                                 (uint8_t) _currRed, (uint8_t) _currBlue);
    (*_stripPtr).setPixelColor(_index, newColor);
    (*_stripPtr).show();
+   return true;
 }
 
 void Pixel::moveTowardDestinationColor() {
@@ -103,7 +94,7 @@ void Pixel::moveTowardDestinationColor() {
 }
 
 bool Pixel::floatEqual(float f1, float f2) {
-  return abs(f1 - f2) < 3;
+  return abs(f1 - f2) < 1;
 }
 
 void Pixel::printColorTriplet(String prefix, float r, float g, float b) {
@@ -114,6 +105,22 @@ void Pixel::printColorTriplet(String prefix, float r, float g, float b) {
 void Pixel::printColorTriplet(String prefix, uint8_t r, uint8_t g, uint8_t b) {
   Serial.println(prefix + ": r = " + String(r) + "; g = " + String(g) + 
                   "; b = " + String(b));
+}
+
+// Print the current red, green, blue values as a hex string 
+void Pixel::printHex() {
+#ifdef DEBUG
+   uint32_t color = (*_stripPtr).Color((uint8_t) _currGreen, 
+                    (uint8_t) _currRed, (uint8_t) _currBlue);
+   Serial.print(String(color,HEX) + ", ");
+#endif
+}
+
+// Print the current red, green, blue values as a hex string 
+String Pixel::getHexStr() {
+   uint32_t color = (*_stripPtr).Color((uint8_t) _currGreen, 
+                    (uint8_t) _currRed, (uint8_t) _currBlue);
+   return (String(color,HEX) + ", ");
 }
 
 
