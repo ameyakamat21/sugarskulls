@@ -21,13 +21,14 @@ Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint32_t color)
 Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green, uint8_t blue) {
   Serial.print(" -- In Pixel::Pixel constructor #");
   Serial.println(index);
+  _lastRecordedMillis = millis();
   _stripPtr = stripPtr;
   _index = index;
-  _currRed = (float) red;
-  _currGreen = (float) green;
-  _currBlue = (float) blue;
+  _currRed = (float) red, _destRed = (float) red, _deltaRed = 0.2;
+  _currGreen = (float) green, _destGreen = (float) green, _deltaGreen = 0.2;
+  _currBlue = (float) blue, _destBlue = (float) blue, _deltaBlue = 0.2;
   _changePeriodMs = 1000; //ms
-  _updatePeriodMs = 20; //ms
+  _updatePeriodMs = 50; //ms
 }
 
 void Pixel::setToNow(uint32_t color)
@@ -54,5 +55,65 @@ void Pixel::setToGradually(uint8_t red, uint8_t green, uint8_t blue)
 void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
 {
   // Set to eventually
+  _destRed = (float) red;
+  _destGreen = (float) green;
+  _destBlue = (float) blue;
+  //Calculate the amount to be added on updateColor() call
+  _deltaRed = (_destRed - _currRed) * _updatePeriodMs / _changePeriodMs;
+  _deltaGreen = (_destGreen - _currGreen) * _updatePeriodMs / _changePeriodMs;
+  _deltaBlue = (_destBlue - _currBlue) * _updatePeriodMs / _changePeriodMs;
+
+  printColorTriplet("dest", _destRed, _destGreen, _destBlue);
+  printColorTriplet("delta", _deltaRed, _deltaGreen, _deltaBlue);
 }
+
+/* 
+ * Call this function every _updatePeriodMs milliseconds
+ *
+ */
+void Pixel::updateColor() {
+   unsigned long currentMillis = millis();
+   if(currentMillis - _lastRecordedMillis < _updatePeriodMs) {
+    return;
+   }
+   _lastRecordedMillis = currentMillis;
+
+   moveTowardDestinationColor();
+
+   printColorTriplet("curr", (uint8_t) _currRed, (uint8_t) _currGreen, (uint8_t) _currBlue);
+
+   uint32_t newColor = (*_stripPtr).Color((uint8_t) _currGreen, 
+                                (uint8_t) _currRed, (uint8_t) _currBlue);
+   (*_stripPtr).setPixelColor(_index, newColor);
+   (*_stripPtr).show();
+}
+
+void Pixel::moveTowardDestinationColor() {
+  if(!floatEqual(_currBlue, _destBlue)) {
+      _currBlue += (_destBlue - _currBlue) * 0.4;
+   }
+   if(!floatEqual(_currRed, _destRed)) {
+      // _currRed += _deltaRed;
+      _currRed += (_destRed - _currRed) * 0.4;
+   }
+   if(!floatEqual(_currGreen, _destGreen)) {
+      // _currGreen += _deltaGreen;
+      _currGreen += (_destGreen - _currGreen) * 0.4;
+   }
+}
+
+bool Pixel::floatEqual(float f1, float f2) {
+  return abs(f1 - f2) < 3;
+}
+
+void Pixel::printColorTriplet(String prefix, float r, float g, float b) {
+   Serial.println(prefix + ": r = " + String(r) + "; g = " + String(g) + 
+                  "; b = " + String(b));
+}
+
+void Pixel::printColorTriplet(String prefix, uint8_t r, uint8_t g, uint8_t b) {
+  Serial.println(prefix + ": r = " + String(r) + "; g = " + String(g) + 
+                  "; b = " + String(b));
+}
+
 

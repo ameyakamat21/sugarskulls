@@ -6,10 +6,11 @@
 #include "Pixel.h"
 
 const char* ssid = "AJ-Xfin";
-const char* password = "<insert>";
+const char* password = "<insert-here>";
 
 ESP8266WebServer server(80);
 #define PIN 5
+#define NUM_PIXELS 5
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -19,9 +20,9 @@ ESP8266WebServer server(80);
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(5, PIN, NEO_GRB + NEO_KHZ800);
-Pixel myPixels[5];
-
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
+Pixel myPixels[NUM_PIXELS];
+unsigned long lastUpdatedMillis = 0;
 const int led = LED_BUILTIN;
 
 void handleRoot() {
@@ -58,34 +59,27 @@ void ledOff() {
 }
 
 void neored() {
-  setStripNow(strip.Color(10, 100, 10));
+  setStripDestinationColor(100, 10, 10);
   server.send(200, "text/plain", "ok");
   strip.show();
 }
 
 void neoblue() {
   server.send(200, "text/plain", "ok");
-  setStripGradually(10, 10, 100);
+  setStripDestinationColor(10, 10, 100);
   strip.show();
 }
 
 void neogreen() {
   server.send(200, "text/plain", "ok");
-  setStripGradually(100, 10, 10);
+  setStripDestinationColor(10, 100, 10);
   strip.show();
 }
 
-void setStripNow(uint32_t color) {
+void setStripDestinationColor(uint8_t red, uint8_t green, uint8_t blue) {
   for(int i=0; i<strip.numPixels(); i++) {
 //      strip.setPixelColor(i, color);
-      myPixels[i].setToNow(color);
-    }
-}
-
-void setStripGradually(uint8_t red, uint8_t green, uint8_t blue) {
-  for(int i=0; i<strip.numPixels(); i++) {
-//      strip.setPixelColor(i, color);
-      myPixels[i].setToGradually(red, green, blue);
+      myPixels[i].setDestinationColor(red, green, blue);
     }
 }
 
@@ -93,18 +87,11 @@ void setPixelStringColor(int pixelNo, String strColor) {
   int number = (int) strtol( &strColor[1], NULL, 16);
   
   // splitting into three parts
-  int r = number >> 16;
-  int g = number >> 8 & 0xFF;
-  int b = number & 0xFF;
-  strip.setPixelColor(pixelNo, strip.Color(g,r,b));
-  Serial.print("Set pixel ");
-  Serial.print(pixelNo);
-  Serial.print(" to ");
-  Serial.print(r);
-  Serial.print(" ");
-  Serial.print(g);
-  Serial.print(" ");
-  Serial.println(b);
+  uint8_t r = number >> 16;
+  uint8_t g = number >> 8 & 0xFF;
+  uint8_t b = number & 0xFF;
+  myPixels[pixelNo].setDestinationColor(r,g,b);
+//  strip.setPixelColor(pixelNo, strip.Color(g,r,b));
 }
 
 void setStripTo() {
@@ -178,5 +165,9 @@ void setup(void){
 
 void loop(void){
   server.handleClient();
- 
+  // Update all pixels
+  for(int i=0; i<NUM_PIXELS; i++) {
+    myPixels[i].updateColor();
+  }
 }
+
