@@ -12,3 +12,12 @@ WarbleEffect::WarbleEffect(float ampl, float periodMs) {
 	_ampl = ampl;
 	_periodMs = periodMs;
 }
+
+WarbleEffect::WarbleEffect(float ampl, float periodMs, float *redPtr, 
+						   float *greenPtr, float *bluePtr) {
+	_ampl = ampl;
+	_periodMs = periodMs;
+	_redPtr = redPtr;
+	_greenPtr = greenPtr;
+	_bluePtr = bluePtr;
+}

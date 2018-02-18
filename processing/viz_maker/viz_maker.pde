@@ -21,13 +21,23 @@ color []pixelColors;
 
 float eRadius;
 
+void setupInitColors() {
+  pixelColors[0] = color(11, 99, 239);
+  pixelColors[1] = color(249, 157, 37);
+  pixelColors[2] = color(252, 250, 247);
+  pixelColors[3] = color(239, 59, 43);
+  pixelColors[4] = color(242, 232, 55);
+}
+
 void setup()
 {
   pixelColors = new color[NUM_PIXELS];
   // initialize pixel colors
-  for(int i=0; i<NUM_PIXELS; i++) {
-    pixelColors[i] = getRandomColor();
-  }
+  //for(int i=0; i<NUM_PIXELS; i++) {
+  //  pixelColors[i] = getRandomColor();
+  //}
+  
+  setupInitColors(); 
   flushColorsUpdate();
   size(200, 200, P3D);
   minim = new Minim(this);

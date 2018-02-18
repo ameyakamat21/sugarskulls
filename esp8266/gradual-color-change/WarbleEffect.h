@@ -13,10 +13,11 @@ class WarbleEffect: PixelEffect
 {
 public:
 	WarbleEffect(float ampl, float periodMs);
+	WarbleEffect(float ampl, float periodMs, float *redPtr, float *greenPtr, float *bluePtr);
 private:
 	float _ampl;
 	float _periodMs;
-
+	float *_redPtr, *_greenPtr, *_bluePtr;
 };
 
 #endif
