@@ -13,14 +13,6 @@ ESP8266WebServer server(80);
 #define PIN 5
 #define NUM_PIXELS 5
 
-// Parameter 1 = number of pixels in strip
-// Parameter 2 = Arduino pin number (most are valid)
-// Parameter 3 = pixel type flags, add together as needed:
-//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
-//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
-//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
-//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-//   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Pixel myPixels[NUM_PIXELS];
 NeoStrip neoStrip = NeoStrip(&strip, NUM_PIXELS);
@@ -78,7 +70,6 @@ void neogreen() {
 
 void setStripDestinationColor(uint8_t red, uint8_t green, uint8_t blue) {
   for(int i=0; i<strip.numPixels(); i++) {
-//      myPixels[i].setDestinationColor(red, green, blue);
       neoStrip.setPixelDestinationColor(i, red, green, blue);  
   }
 }
@@ -90,23 +81,19 @@ void setPixelStringColor(int pixelNo, String strColor) {
   uint8_t r = number >> 16;
   uint8_t g = number >> 8 & 0xFF;
   uint8_t b = number & 0xFF;
-  myPixels[pixelNo].setDestinationColor(r,g,b);
-//  strip.setPixelColor(pixelNo, strip.Color(g,r,b));
+  neoStrip.setPixelDestinationColor(pixelNo, r, g, b);
 }
 
 void setStripTo() {
-  String c0 = server.arg("p0");
-  setPixelStringColor(0,c0);
-  String c1 = server.arg("p1");
-  setPixelStringColor(1,c1);
-  String c2 = server.arg("p2");
-  setPixelStringColor(2,c2);
-  String c3 = server.arg("p3");
-  setPixelStringColor(3,c3);
-  String c4 = server.arg("p4");
-  setPixelStringColor(4,c4);
+  String response = "";
+  for(int i=0; i<NUM_PIXELS; i++) {
+    String arg_i = "p" + String(i);
+    String color_i = server.arg(arg_i);
+    setPixelStringColor(i,color_i);
+    response += color_i + " ";
+  }
   strip.show();
-  server.send(200, "text/plain", "ok " + c0 + " " + c1 + " " + c2 + " " + c3 + " " + c4 + "\n");
+  server.send(200, "text/plain", "ok " + response + "\n");
 }
 
 void setup(void){
@@ -168,16 +155,5 @@ void loop(void){
   server.handleClient();
   // Update all pixels
   neoStrip.updateColor();
-//  bool updated = false;
-//  printStr = "";
-//  for(int i=0; i<NUM_PIXELS; i++) {
-//    updated = updated || myPixels[i].updateColor();
-//    printStr += myPixels[i].getHexStr();
-//  }
-//#ifdef DEBUG
-//  if(updated)  {
-//    Serial.println(printStr);
-//  }
-//#endif
 }
 
