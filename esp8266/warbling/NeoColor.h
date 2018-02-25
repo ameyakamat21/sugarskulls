@@ -10,15 +10,19 @@
 class NeoColor
 {
 public:
+	NeoColor();
 	NeoColor(float red, float green, float blue);
-	float getRed();
-	float getGreen();
-	float getBlue();
+	float red();
+	float green();
+	float blue();
 	uint32_t getFinalColor();
 	void set(float red, float green, float blue);
+	void set(uint8_t red, uint8_t green, uint8_t blue);
+	void moveTowards(NeoColor destColor, float factor);
 private:
 	float _red, _green, _blue;
 	uint32_t applyBounds(float comp);
+	bool floatEqual(float f1, float f2);
 };
 
 #endif

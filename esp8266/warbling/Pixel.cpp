@@ -6,9 +6,6 @@
 
 #include "Pixel.h"
 
-#include <Adafruit_NeoPixel.h>
-#include <ESP8266WiFi.h>
-
 Pixel::Pixel() {
 
 }
@@ -19,6 +16,10 @@ Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green,
   _lastRecordedMillis = millis();
   _stripPtr = stripPtr;
   _index = index;
+  _currColor = NeoColor((float) red, (float) green, (float) blue);
+  _destColor = NeoColor((float) red, (float) green, (float) blue);
+  _endEffectColor = NeoColor((float) red, (float) green, (float) blue);
+
   _currRed = (float) red, _destRed = (float) red, _endEffectRed = (float) red;
   _currGreen = (float) green, _destGreen = (float) green, _endEffectGreen = (float) green;
   _currBlue = (float) blue, _destBlue = (float) blue, _endEffectBlue = (float) blue;
@@ -33,26 +34,15 @@ void Pixel::setToNow(uint32_t color)
   (*_stripPtr).setPixelColor(_index, color);
 }
 
-void Pixel::setToGradually(uint8_t red, uint8_t green, uint8_t blue)
-{
-  // Set to eventually
-  for(int i = 0; i < 50; i++) {
-    green = (green + 10) % 256;
-    red = (red + 10) % 256;
-    blue = (red + 10) % 256;
-    (*_stripPtr).setPixelColor(_index, (*_stripPtr).Color(green, red, blue));
-    (*_stripPtr).show();
-    delay(20);
-  }
-}
 
 void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
 {
+  _destColor.set(red, green, blue);
   // Set to eventually
   _destRed = (float) red;
   _destGreen = (float) green;
   _destBlue = (float) blue;
-  
+
 }
 
 /* 
@@ -73,12 +63,14 @@ bool Pixel::updateColor() {
    // printColorTriplet("curr", (uint8_t) _currRed, (uint8_t) _currGreen, (uint8_t) _currBlue);
    uint32_t newColor = (*_stripPtr).Color((uint8_t) _currGreen, 
                                 (uint8_t) _currRed, (uint8_t) _currBlue);
-   (*_stripPtr).setPixelColor(_index, newColor);
+   (*_stripPtr).setPixelColor(_index, _currColor.getFinalColor());
    (*_stripPtr).show();
    return true;
 }
 
 void Pixel::moveTowardDestinationColor() {
+  _currColor.moveTowards(_destColor, _updateFactor);
+
   if(!floatEqual(_currBlue, _destBlue)) {
       _currBlue += (_destBlue - _currBlue) * _updateFactor;
    }

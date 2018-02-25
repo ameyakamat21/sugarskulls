@@ -7,6 +7,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
+#include "NeoColor.h"
 
 class Pixel
 {
@@ -14,7 +15,6 @@ class Pixel
   	Pixel();
     Pixel(Adafruit_NeoPixel *strip, int index, uint8_t red, uint8_t green, uint8_t blue);
     void setToNow(uint32_t color);
-    void setToGradually(uint8_t red, uint8_t green, uint8_t blue);
     void setDestinationColor(uint8_t red, uint8_t green, uint8_t blue);
     bool updateColor();
     bool floatEqual(float f1, float f2);
@@ -26,6 +26,8 @@ class Pixel
     Adafruit_NeoPixel *_stripPtr;
     int _index;
     unsigned long _lastRecordedMillis;
+    NeoColor _currColor, _destColor, _endEffectColor;
+
     float _currRed, _destRed, _endEffectRed;
     float _currGreen, _destGreen, _endEffectGreen;
     float _currBlue, _destBlue, _endEffectBlue;
