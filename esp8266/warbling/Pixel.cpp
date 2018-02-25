@@ -19,9 +19,9 @@ Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green,
   _lastRecordedMillis = millis();
   _stripPtr = stripPtr;
   _index = index;
-  _currRed = (float) red, _destRed = (float) red, _deltaRed = 0.2;
-  _currGreen = (float) green, _destGreen = (float) green, _deltaGreen = 0.2;
-  _currBlue = (float) blue, _destBlue = (float) blue, _deltaBlue = 0.2;
+  _currRed = (float) red, _destRed = (float) red, _endEffectRed = (float) red;
+  _currGreen = (float) green, _destGreen = (float) green, _endEffectGreen = (float) green;
+  _currBlue = (float) blue, _destBlue = (float) blue, _endEffectBlue = (float) blue;
   _changePeriodMs = 1000; //ms
   _updatePeriodMs = 25; //ms
   _updateFactor = 0.25;
@@ -52,11 +52,7 @@ void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
   _destRed = (float) red;
   _destGreen = (float) green;
   _destBlue = (float) blue;
-
-  // *DEPRECATED* Calculate the amount to be added on updateColor() call
-  _deltaRed = (_destRed - _currRed) * _updatePeriodMs / _changePeriodMs;
-  _deltaGreen = (_destGreen - _currGreen) * _updatePeriodMs / _changePeriodMs;
-  _deltaBlue = (_destBlue - _currBlue) * _updatePeriodMs / _changePeriodMs;
+  
 }
 
 /* 
@@ -71,6 +67,8 @@ bool Pixel::updateColor() {
    _lastRecordedMillis = currentMillis;
 
    moveTowardDestinationColor();
+
+
 
    // printColorTriplet("curr", (uint8_t) _currRed, (uint8_t) _currGreen, (uint8_t) _currBlue);
    uint32_t newColor = (*_stripPtr).Color((uint8_t) _currGreen, 

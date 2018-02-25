@@ -21,3 +21,15 @@ WarbleEffect::WarbleEffect(float ampl, float periodMs, float *redPtr,
 	_greenPtr = greenPtr;
 	_bluePtr = bluePtr;
 }
+
+void WarbleEffect::updateAmplitude(float ampl) {
+	_ampl = ampl;
+}
+
+void WarbleEffect::updatePeriod(float periodMs) {
+	_periodMs = periodMs;
+}
+
+// void WarbleEffect::applyWarble(float *redPtr, float *greenPtr, float *bluePtr, float baseRed, float baseGreen, float baseBlue) {
+
+// }

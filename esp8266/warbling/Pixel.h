@@ -26,9 +26,9 @@ class Pixel
     Adafruit_NeoPixel *_stripPtr;
     int _index;
     unsigned long _lastRecordedMillis;
-    float _currRed, _destRed, _deltaRed;
-    float _currGreen, _destGreen, _deltaGreen;
-    float _currBlue, _destBlue, _deltaBlue;
+    float _currRed, _destRed, _endEffectRed;
+    float _currGreen, _destGreen, _endEffectGreen;
+    float _currBlue, _destBlue, _endEffectBlue;
     float _updateFactor;
     int _changePeriodMs;  // Period under which the color changes 
     int _updatePeriodMs;  // How often an update happens
