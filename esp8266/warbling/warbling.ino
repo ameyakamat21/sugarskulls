@@ -5,10 +5,12 @@
 #include <Adafruit_NeoPixel.h>
 #include "Pixel.h"
 #include "NeoStrip.h"
+#include "WebServer.h"
 
 const char* ssid = "AJ-Xfin";
 const char* password = "<ins-here>";
 
+WebServer webServer;
 ESP8266WebServer server(80);
 #define PIN 5
 #define NUM_PIXELS 5
@@ -116,23 +118,12 @@ void setup(void){
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   digitalWrite(led, 1);
-
-  // Init neopixel strip
-  strip.begin();
-  strip.show();
-
-  Serial.println(" - Initializing Pixel array");
-  // neoStrip = NeoStrip(&strip, NUM_PIXELS);
-  for(uint8_t i=0; i<5; i++) {
-    myPixels[i] = Pixel(&strip, i, 100, 200, 150);
-  }
   
-  Serial.println(" - Finished initializing Pixel array");
-
   if (MDNS.begin("esp8266")) {
     Serial.println("MDNS responder started");
   }
 
+//  webServer = WebServer(server, &neoStrip);
   server.on("/", handleRoot);
   server.on("/ledon", ledOn);
   server.on("/ledoff", ledOff);

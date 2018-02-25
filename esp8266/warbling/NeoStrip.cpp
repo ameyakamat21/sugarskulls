@@ -45,3 +45,7 @@ void NeoStrip::updateColor() {
 	 }
 	#endif
 }
+
+int NeoStrip::numPixels() {
+	return _numPixels;
+}
