@@ -4,6 +4,7 @@
 #include "NeoColor.h"
 #include <Adafruit_NeoPixel.h>
 
+
 NeoColor::NeoColor() {
 
 }
@@ -56,6 +57,8 @@ uint32_t NeoColor::getFinalColor() {
 	return (applyBounds(_green) << 16) | (applyBounds(_red) <<  8) | applyBounds(_blue);
 }
 
+/* Private methods */
+
 /* 
 Casts comp to a uint32_t, ensuring it is in the bounds [0,255]
 */
@@ -71,4 +74,15 @@ uint32_t NeoColor::applyBounds(float comp) {
 
 bool NeoColor::floatEqual(float f1, float f2) {
   return abs(f1 - f2) < 1;
+}
+
+void NeoColor::printHex() {
+#ifdef DEBUG
+   Serial.print(String(getFinalColor(),HEX) + ", ");
+#endif
+}
+
+// Print the current red, green, blue values as a hex string 
+String NeoColor::getHexStr() {
+   return (String(getFinalColor(),HEX) + ", ");
 }

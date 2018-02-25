@@ -28,9 +28,6 @@ class Pixel
     unsigned long _lastRecordedMillis;
     NeoColor _currColor, _destColor, _endEffectColor;
 
-    float _currRed, _destRed, _endEffectRed;
-    float _currGreen, _destGreen, _endEffectGreen;
-    float _currBlue, _destBlue, _endEffectBlue;
     float _updateFactor;
     int _changePeriodMs;  // Period under which the color changes 
     int _updatePeriodMs;  // How often an update happens
