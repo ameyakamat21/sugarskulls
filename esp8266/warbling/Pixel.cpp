@@ -5,6 +5,7 @@
 // Ex: curl -X POST -d "p0=#93EDDC&p1=#F9FCA6&p2=#8661f4&p3=#0000AA&p4=#050505" 10.0.0.203:80/setstripto
 
 #include "Pixel.h"
+#include "WarbleEffect.h"
 
 Pixel::Pixel() {
 
@@ -21,8 +22,10 @@ Pixel::Pixel(Adafruit_NeoPixel *stripPtr, int index, uint8_t red, uint8_t green,
   _endEffectColor = NeoColor((float) red, (float) green, (float) blue);
 
   _changePeriodMs = 1000; //ms
-  _updatePeriodMs = 25; //ms
+  _updatePeriodMs = 10; //ms
   _updateFactor = 0.25;
+
+  _warbleEffect = WarbleEffect(20, 25);
 }
 
 void Pixel::setToNow(uint32_t color)
@@ -49,8 +52,9 @@ bool Pixel::updateColor() {
    _lastRecordedMillis = currentMillis;
 
    moveTowardDestinationColor();
+   _warbleEffect.applyWarble(&_endEffectColor, _currColor);
 
-   (*_stripPtr).setPixelColor(_index, _currColor.getFinalColor());
+   (*_stripPtr).setPixelColor(_index, _endEffectColor.getFinalColor());
    (*_stripPtr).show();
    return true;
 }

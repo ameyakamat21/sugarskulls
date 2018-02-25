@@ -8,6 +8,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include "NeoColor.h"
+#include "WarbleEffect.h"
 
 class Pixel
 {
@@ -27,6 +28,7 @@ class Pixel
     int _index;
     unsigned long _lastRecordedMillis;
     NeoColor _currColor, _destColor, _endEffectColor;
+    WarbleEffect _warbleEffect;
 
     float _updateFactor;
     int _changePeriodMs;  // Period under which the color changes 

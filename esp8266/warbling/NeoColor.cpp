@@ -6,7 +6,6 @@
 
 
 NeoColor::NeoColor() {
-
 }
 
 NeoColor::NeoColor(float red, float green, float blue) {

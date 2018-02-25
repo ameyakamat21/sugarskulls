@@ -8,12 +8,14 @@
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 
+
+// TODO implement effect chain: a linked list of effects
+
 class PixelEffect
 {
 public:
 	virtual void updatePixel() = 0;
 private:
-	float *_currRed, *_currGreen, *_currBlue;
 
 };
 
