@@ -4,9 +4,10 @@
 #include <ESP8266mDNS.h>
 #include <Adafruit_NeoPixel.h>
 #include "Pixel.h"
+#include "NeoStrip.h"
 
 const char* ssid = "AJ-Xfin";
-const char* password = "<insert-here>";
+const char* password = "<ins-here>";
 
 ESP8266WebServer server(80);
 #define PIN 5
@@ -22,6 +23,7 @@ ESP8266WebServer server(80);
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, PIN, NEO_GRB + NEO_KHZ800);
 Pixel myPixels[NUM_PIXELS];
+NeoStrip neoStrip = NeoStrip(&strip, NUM_PIXELS);
 unsigned long lastUpdatedMillis = 0;
 const int led = LED_BUILTIN;
 String printStr = "";
@@ -76,8 +78,9 @@ void neogreen() {
 
 void setStripDestinationColor(uint8_t red, uint8_t green, uint8_t blue) {
   for(int i=0; i<strip.numPixels(); i++) {
-      myPixels[i].setDestinationColor(red, green, blue);
-    }
+//      myPixels[i].setDestinationColor(red, green, blue);
+      neoStrip.setPixelDestinationColor(i, red, green, blue);  
+  }
 }
 
 void setPixelStringColor(int pixelNo, String strColor) {
@@ -132,6 +135,7 @@ void setup(void){
   strip.show();
 
   Serial.println(" - Initializing Pixel array");
+  // neoStrip = NeoStrip(&strip, NUM_PIXELS);
   for(uint8_t i=0; i<5; i++) {
     myPixels[i] = Pixel(&strip, i, 100, 200, 150);
   }
@@ -163,16 +167,17 @@ void setup(void){
 void loop(void){
   server.handleClient();
   // Update all pixels
-  bool updated = false;
-  printStr = "";
-  for(int i=0; i<NUM_PIXELS; i++) {
-    updated = updated || myPixels[i].updateColor();
-    printStr += myPixels[i].getHexStr();
-  }
-#ifdef DEBUG
-  if(updated)  {
-    Serial.println(printStr);
-  }
-#endif
+  neoStrip.updateColor();
+//  bool updated = false;
+//  printStr = "";
+//  for(int i=0; i<NUM_PIXELS; i++) {
+//    updated = updated || myPixels[i].updateColor();
+//    printStr += myPixels[i].getHexStr();
+//  }
+//#ifdef DEBUG
+//  if(updated)  {
+//    Serial.println(printStr);
+//  }
+//#endif
 }
 

@@ -15,6 +15,10 @@ NeoStrip::NeoStrip(Adafruit_NeoPixel *stripPtr, int numPixels) {
 	for(int i = 0; i<numPixels; i++) {
 		_pixels[i] = Pixel(stripPtr, i, 100, 200, 150);
 	}
+
+	// Initialize strip
+	(*stripPtr).begin();
+  	(*stripPtr).show();
 }
 
 
@@ -27,8 +31,17 @@ void NeoStrip::setPixelDestinationColor(int pixelNo, uint8_t r, uint8_t g, uint8
  * Callback to be called every iteration of main loop to update colors
  */
 void NeoStrip::updateColor() {
-
+	bool updated = false;
+ 	String printStr = "";
 	for(int i=0; i<_numPixels; i++) {
-		_pixels[i].updateColor();
+
+		updated = updated || _pixels[i].updateColor();
+	   	printStr += _pixels[i].getHexStr();
 	}
+
+	#ifdef DEBUG
+	 if(updated)  {
+	   Serial.println(printStr);
+	 }
+	#endif
 }

@@ -2,6 +2,8 @@
   Pixel.cpp 
 */
 
+// Ex: curl -X POST -d "p0=#93EDDC&p1=#F9FCA6&p2=#8661f4&p3=#0000AA&p4=#050505" 10.0.0.203:80/setstripto
+
 #include "Pixel.h"
 
 #include <Adafruit_NeoPixel.h>
@@ -50,13 +52,11 @@ void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
   _destRed = (float) red;
   _destGreen = (float) green;
   _destBlue = (float) blue;
-  //Calculate the amount to be added on updateColor() call
+
+  // *DEPRECATED* Calculate the amount to be added on updateColor() call
   _deltaRed = (_destRed - _currRed) * _updatePeriodMs / _changePeriodMs;
   _deltaGreen = (_destGreen - _currGreen) * _updatePeriodMs / _changePeriodMs;
   _deltaBlue = (_destBlue - _currBlue) * _updatePeriodMs / _changePeriodMs;
-
-  printColorTriplet("dest", _destRed, _destGreen, _destBlue);
-  printColorTriplet("delta", _deltaRed, _deltaGreen, _deltaBlue);
 }
 
 /* 
@@ -85,11 +85,9 @@ void Pixel::moveTowardDestinationColor() {
       _currBlue += (_destBlue - _currBlue) * _updateFactor;
    }
    if(!floatEqual(_currRed, _destRed)) {
-      // _currRed += _deltaRed;
       _currRed += (_destRed - _currRed) *  _updateFactor;
    }
    if(!floatEqual(_currGreen, _destGreen)) {
-      // _currGreen += _deltaGreen;
       _currGreen += (_destGreen - _currGreen) * _updateFactor;
    }
 }
