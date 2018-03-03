@@ -40,6 +40,10 @@ void Pixel::setDestinationColor(uint8_t red, uint8_t green, uint8_t blue)
   _destColor.set(red, green, blue);
 }
 
+void Pixel::setEffect(int warbPeriodMs, int warbAmpl) {
+  _warbleEffect.updateParams((float) warbPeriodMs, (float) warbAmpl);
+}
+
 /* 
  * Call this function every _updatePeriodMs milliseconds
  *

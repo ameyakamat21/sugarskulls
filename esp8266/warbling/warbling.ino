@@ -55,6 +55,7 @@ void setup(void){
   server.on("/neoblue", neoblue);
   server.on("/neogreen", neogreen);
   server.on("/setstripto", setStripTo);
+  server.on("/seteffectparams", handleSetEffectParams);
 
   server.on("/inline", [](){
     server.send(200, "text/plain", "this works as well");

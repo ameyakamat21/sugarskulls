@@ -17,6 +17,7 @@ public:
 	WarbleEffect(float ampl, float periodMs);
 	void updateAmplitude(float ampl);
 	void updatePeriod(float period);
+	void updateParams(float ampl, float period);
 	void applyWarble(NeoColor *endEffectColor, NeoColor baseColor);
 private:
 	float _ampl;

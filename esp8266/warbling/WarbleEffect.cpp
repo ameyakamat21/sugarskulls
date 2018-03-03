@@ -31,6 +31,11 @@ void WarbleEffect::updatePeriod(float periodMs) {
 	_periodMs = periodMs;
 }
 
+void WarbleEffect::updateParams(float periodMs, float ampl) {
+	_periodMs = periodMs;
+	_ampl = ampl;
+}
+
 void WarbleEffect::applyWarble(NeoColor *endEffectColor, NeoColor baseColor) {
 	unsigned long t = millis();
 	float newRed = baseColor.red() + _redDirection * _ampl * sin(2*PI*t/_periodMs);

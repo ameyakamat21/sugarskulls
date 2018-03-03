@@ -27,6 +27,10 @@ void NeoStrip::setPixelDestinationColor(int pixelNo, uint8_t r, uint8_t g, uint8
 	_pixels[pixelNo].setDestinationColor(r, g, b);
 }
 
+void NeoStrip::setPixelEffect(int pixelNo, int warbPeriodMs, int warbAmpl) {
+	_pixels[pixelNo].setEffect(warbPeriodMs, warbAmpl);
+}
+
 /* 
  * Callback to be called every iteration of main loop to update colors
  */

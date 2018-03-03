@@ -15,6 +15,7 @@ public:
 	NeoStrip(Adafruit_NeoPixel *stripPtr, int numPixels);
 	void updateColor();
 	void setPixelDestinationColor(int pixelNo, uint8_t r, uint8_t g, uint8_t b);
+	void setPixelEffect(int pixelNo, int warbPeriodMs, int warbAmpl);
 	int numPixels();
 private:
 	Adafruit_NeoPixel *_stripPtr;

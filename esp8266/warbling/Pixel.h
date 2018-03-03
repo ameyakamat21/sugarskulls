@@ -17,6 +17,7 @@ class Pixel
     Pixel(Adafruit_NeoPixel *strip, int index, uint8_t red, uint8_t green, uint8_t blue);
     void setToNow(uint32_t color);
     void setDestinationColor(uint8_t red, uint8_t green, uint8_t blue);
+    void setEffect(int warbPeriosMs, int warbAmpl);
     bool updateColor();
     bool floatEqual(float f1, float f2);
     void printColorTriplet(String prefix, float r, float g, float b);

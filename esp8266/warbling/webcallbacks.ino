@@ -24,6 +24,27 @@ void neogreen() {
   setStripDestinationColor(10, 100, 10);
 }
 
+/* 
+ * Set the effect parameters of the pixels
+ * Arguments of the form period1=20&ampl1=10...
+ */
+void handleSetEffectParams() {
+  String response = "";
+  for(int i=0; i<NUM_PIXELS; i++) {
+    String period_arg_i = "period" + String(i);
+    String ampl_arg_i   = "ampl" + String(i);
+    String period_i     = server.arg(period_arg_i);
+    String ampl_i       = server.arg(ampl_arg_i);
+    Serial.print(period_i);
+    Serial.print(" ");
+    Serial.println(ampl_i);
+    setPixelStringEffect(i, period_i, ampl_i);
+    response += "(" + period_i + ", " + ampl_i + ") ";
+  }
+
+  server.send(200, "text/plain", "ok " + response + "\n");
+}
+
 
 void handleRoot() {
   digitalWrite(led, 1);
@@ -62,6 +83,12 @@ void setPixelStringColor(int pixelNo, String strColor) {
   uint8_t g = number >> 8 & 0xFF;
   uint8_t b = number & 0xFF;
   neoStrip.setPixelDestinationColor(pixelNo, r, g, b);
+}
+
+void setPixelStringEffect(int pixelNo, String periodMsStr, String ampStr) {
+  int periodMs  = (int) strtol( &periodMsStr[0], NULL, 10);
+  int ampl      = (int) strtol( &ampStr[0], NULL, 10);
+  neoStrip.setPixelEffect(pixelNo, periodMs, ampl);     
 }
 
 void setStripTo() {
