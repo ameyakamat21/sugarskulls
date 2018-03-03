@@ -15,7 +15,8 @@ class WebServer
 {
 public:
 	WebServer();
-	WebServer(ESP8266WebServer espServer, NeoStrip *neoStrip);
+	WebServer(ESP8266WebServer *espServer, NeoStrip *neoStrip);
+	void handleClient();
 	void handleRoot();
 	void handleNotFound();
 	void ledOn();
@@ -27,9 +28,9 @@ public:
 	void setPixelStringColor(int pixelNo, String strColor);
 	void setStripTo();
 private:
-	ESP8266WebServer _espServer;
+	ESP8266WebServer *_espServer;
 	NeoStrip *_neoStrip;
-	const int _ledPin = LED_BUILTIN;
+	int _ledPin = LED_BUILTIN;
 };
 
 #endif

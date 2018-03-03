@@ -10,8 +10,8 @@
 const char* ssid = "AJ-Xfin";
 const char* password = "<ins-here>";
 
-WebServer webServer;
 ESP8266WebServer server(80);
+WebServer webServer;
 #define PIN 5
 #define NUM_PIXELS 5
 
@@ -21,82 +21,6 @@ NeoStrip neoStrip = NeoStrip(&strip, NUM_PIXELS);
 unsigned long lastUpdatedMillis = 0;
 const int led = LED_BUILTIN;
 String printStr = "";
-
-void handleRoot() {
-  digitalWrite(led, 1);
-  server.send(200, "text/plain", "hello from esp8266!");
-  digitalWrite(led, 0);
-}
-
-void handleNotFound(){
-  digitalWrite(led, 1);
-  String message = "File Not Found\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nMethod: ";
-  message += (server.method() == HTTP_GET)?"GET":"POST";
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  for (uint8_t i=0; i<server.args(); i++){
-    message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-  }
-  server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
-}
-
-void ledOn() {
-  digitalWrite(led, 0);
-  server.send(200, "text/plain", "ok");
-}
-
-void ledOff() {
-  digitalWrite(led, 1);
-  server.send(200, "text/plain", "ok");
-}
-
-void neored() {
-  setStripDestinationColor(100, 10, 10);
-  server.send(200, "text/plain", "ok");
-}
-
-void neoblue() {
-  server.send(200, "text/plain", "ok");
-  setStripDestinationColor(10, 10, 100);
-}
-
-void neogreen() {
-  server.send(200, "text/plain", "ok");
-  setStripDestinationColor(10, 100, 10);
-}
-
-void setStripDestinationColor(uint8_t red, uint8_t green, uint8_t blue) {
-  for(int i=0; i<strip.numPixels(); i++) {
-      neoStrip.setPixelDestinationColor(i, red, green, blue);  
-  }
-}
-
-void setPixelStringColor(int pixelNo, String strColor) {
-  int number = (int) strtol( &strColor[1], NULL, 16);
-  
-  // splitting into three parts
-  uint8_t r = number >> 16;
-  uint8_t g = number >> 8 & 0xFF;
-  uint8_t b = number & 0xFF;
-  neoStrip.setPixelDestinationColor(pixelNo, r, g, b);
-}
-
-void setStripTo() {
-  String response = "";
-  for(int i=0; i<NUM_PIXELS; i++) {
-    String arg_i = "p" + String(i);
-    String color_i = server.arg(arg_i);
-    setPixelStringColor(i,color_i);
-    response += color_i + " ";
-  }
-  strip.show();
-  server.send(200, "text/plain", "ok " + response + "\n");
-}
 
 void setup(void){
   pinMode(led, OUTPUT);
@@ -123,7 +47,7 @@ void setup(void){
     Serial.println("MDNS responder started");
   }
 
-//  webServer = WebServer(server, &neoStrip);
+//  webServer = WebServer(&server, &neoStrip);
   server.on("/", handleRoot);
   server.on("/ledon", ledOn);
   server.on("/ledoff", ledOff);
@@ -144,6 +68,7 @@ void setup(void){
 
 void loop(void){
   server.handleClient();
+//  webServer.handleClient();
   // Update all pixels
   neoStrip.updateColor();
 }
